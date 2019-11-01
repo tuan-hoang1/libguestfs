@@ -315,6 +315,12 @@ add_drive (guestfs_h *g, struct backend_direct_data *data,
     start_list ("-device") {
       append_list ("scsi-hd");
       append_list_format ("drive=hd%zu", i);
+      if (g->blocksize >= 512 && g->blocksize <= 32768
+          && (g->blocksize & (g->blocksize-1)) == 0)
+      {
+        append_list_format ("physical_block_size=%d", g->blocksize);
+        append_list_format ("logical_block_size=%d", g->blocksize);
+      }
       if (drv->disk_label)
         append_list_format ("serial=%s", drv->disk_label);
     } end_list ();

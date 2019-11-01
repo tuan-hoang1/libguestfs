@@ -513,6 +513,9 @@ struct guestfs_h {
 
   /* Used by lib/info.c.  -1 = not tested or error; else 0 or 1. */
   int qemu_img_supports_U_option;
+
+  /* Used by guestfish's launch call */
+  int blocksize;
 };
 
 /**

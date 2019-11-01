@@ -26,7 +26,7 @@ open Types
 let non_daemon_functions = [
   { defaults with
     name = "launch"; added = (0, 0, 3);
-    style = RErr, [], [];
+    style = RErr, [], [OInt "blocksize"];
     fish_alias = ["run"]; progress = true; config_only = true;
     shortdesc = "launch the backend";
     longdesc = "\
@@ -36,7 +36,21 @@ You should call this after configuring the handle
 Do not call C<guestfs_launch> twice on the same handle.  Although
 it will not give an error (for historical reasons), the precise
 behaviour when you do this is not well defined.  Handles are
-very cheap to create, so create a new one for each launch." };
+very cheap to create, so create a new one for each launch.
+
+The optional arguments are:
+
+=over 4
+
+=item C<blocksize>
+
+If provided, the call will add C<physical_block_size=\"blocksize\"> and
+C<logical_block_size=\"blocksize\"> to qemu's C<-device> directive. The blocksize
+must be a power of 2 between 512 and 32768, or else it will be ignored.
+
+The default is none, and qemu would assume a blocksize of 512.
+
+=back" };
 
   { defaults with
     name = "add_drive_ro"; added = (1, 0, 38);
