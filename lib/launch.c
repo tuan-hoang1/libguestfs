@@ -54,7 +54,7 @@ static struct backend {
 } *backends = NULL;
 
 int
-guestfs_impl_launch (guestfs_h *g)
+guestfs_impl_launch (guestfs_h *g, const struct guestfs_launch_argv *optargs)
 {
   int r;
 
@@ -84,6 +84,16 @@ guestfs_impl_launch (guestfs_h *g)
   /* Make the temporary directory. */
   if (guestfs_int_lazy_make_tmpdir (g) == -1)
     return -1;
+
+  /* Add the blocksize. */
+  if (optargs->blocksize >= 512 && optargs->blocksize <= 32768
+      && (optargs->blocksize & (optargs->blocksize-1)) == 0) {
+    g->blocksize = optargs->blocksize;
+    debug (g, "using blocksize of %d", g->blocksize);
+  }
+  else {
+    debug (g, _("blocksize must be a power of 2 between 512 and 32768"));
+  }
 
   /* Some common debugging information. */
   if (g->verbose) {
